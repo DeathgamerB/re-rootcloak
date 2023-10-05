@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -27,7 +27,6 @@ public class CustomizeCommands extends PreferenceActivity {
     String[] commandList;
     boolean isFirstRunCommands;
 
-    @SuppressLint("WorldReadableFiles")
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

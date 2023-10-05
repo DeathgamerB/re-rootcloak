@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
-import eu.chainfire.libsuperuser.Shell;
 
 public class NativeRootDetectionReceiver extends BroadcastReceiver {
     private static RootUtil mRootShell;

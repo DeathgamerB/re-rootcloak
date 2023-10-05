@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -24,8 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.chainfire.libsuperuser.Shell;
-
 @SuppressWarnings("deprecation")
 public class NativeRootDetection extends PreferenceActivity {
     private static SharedPreferences mPrefs;
@@ -39,7 +37,7 @@ public class NativeRootDetection extends PreferenceActivity {
         if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
 
         getPreferenceManager()
-                .setSharedPreferencesMode(MODE_WORLD_READABLE);
+                .setSharedPreferencesMode(MODE_PRIVATE);
         addPreferencesFromResource(R.xml.native_root_detection);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         

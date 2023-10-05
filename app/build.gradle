@@ -5,17 +5,17 @@ def aliasName = hasProperty('ALIAS_NAME') ? ALIAS_NAME : System.getenv('ALIAS_NA
 def aliasPass = hasProperty('ALIAS_PASS') ? ALIAS_PASS : System.getenv('ALIAS_PASS')
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.1"
 
-    namespace "com.devadvance.rootcloak2"
+    namespace "io.pfuenzle.rerootcloak"
 
     defaultConfig {
-        applicationId "com.devadvance.rootcloak2"
-        minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 18
-        versionName "3.0-beta_20160731_2"
+        applicationId "io.pfuenzle.rerootcloak"
+        minSdkVersion 31
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
         ndk {
             moduleName "rootcloak"
             cFlags "-fPIC -shared"
@@ -98,5 +98,13 @@ def getNdkBuildCmd() {
 
 dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
-    implementation 'eu.chainfire:libsuperuser:1.0.0.201811281328'
+
+    // The core module that provides APIs to a shell
+    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
+
+    // Optional: APIs for creating root services. Depends on ":core"
+    implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
+
+    // Optional: Provides remote file system support
+    implementation "com.github.topjohnwu.libsu:nio:${libsuVersion}"
 }

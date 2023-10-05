@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,7 +14,7 @@ import eu.chainfire.libsuperuser.BuildConfig;
 
 public class Common {
     public static final String PREFS_SETTINGS = "CustomizeSettings";
-    public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
+    public static final String PACKAGE_NAME = "io.pfuenzle.rerootcloak";
     public static final String FIRST_RUN_KEY = PACKAGE_NAME + "IS_FIRST_RUN";
     public static final String DEBUG_KEY = "debug_logs";
     public static final String SHOW_WARNING = "SHOW_WARNING";
@@ -24,7 +24,7 @@ public class Common {
     public static final PrefSet COMMANDS = new CommandSet();
     public static final PrefSet LIBRARIES = new LibrarySet();
 
-    public static final String REFRESH_APPS_INTENT = "com.devadvance.rootcloak2.REFRESH_APPS";
+    public static final String REFRESH_APPS_INTENT = "io.pfuenzle.rerootcloak.REFRESH_APPS";
 
     public static boolean isUserApp(ApplicationInfo appInfo) {
         /* Hide RootCloak */
@@ -43,10 +43,9 @@ public class Common {
 
         abstract Set<String> getDefaultSet();
 
-        @SuppressLint("WorldReadableFiles")
         public SharedPreferences getSharedPreferences(PreferenceActivity activity) {
-            activity.getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
-            return activity.getSharedPreferences(getPrefKey(), Context.MODE_WORLD_READABLE);
+            activity.getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
+            return activity.getSharedPreferences(getPrefKey(), Context.MODE_PRIVATE);
         }
     }
 

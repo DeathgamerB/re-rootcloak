@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 import java.util.List;
 

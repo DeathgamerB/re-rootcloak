@@ -1,6 +1,5 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -11,22 +10,19 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
-import eu.chainfire.libsuperuser.BuildConfig;
-
 @SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
-    @SuppressLint("WorldReadableFiles")
     @Override
     public SharedPreferences getSharedPreferences(String name, int mode) {
-        return getApplicationContext().getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+        return getApplicationContext().getSharedPreferences(Common.PREFS_SETTINGS, MODE_PRIVATE);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPreferenceManager()
-                .setSharedPreferencesMode(MODE_WORLD_READABLE);
+                .setSharedPreferencesMode(MODE_PRIVATE);
         addPreferencesFromResource(R.xml.preferences);
 
         Preference manageApps = findPreference("manage_apps");
@@ -100,7 +96,7 @@ public class SettingsActivity extends PreferenceActivity {
                         int state = (boolean)newValue ?
                                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                                     PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-                        ComponentName alias = new ComponentName( SettingsActivity.this, "com.devadvance.rootcloak2.Settings" );
+                        ComponentName alias = new ComponentName( SettingsActivity.this, "io.pfuenzle.rerootcloak.Settings" );
                         getPackageManager().setComponentEnabledSetting( alias, state, PackageManager.DONT_KILL_APP );
                         return true;
                     }
@@ -108,7 +104,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 
         Preference about = findPreference("about");
-        about.setSummary("RootCloak v" + BuildConfig.VERSION_NAME);
+        about.setSummary("Re-RootCloak");
     }
 
 

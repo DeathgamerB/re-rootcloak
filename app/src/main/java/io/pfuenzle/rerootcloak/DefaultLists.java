@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package io.pfuenzle.rerootcloak;
 
 public class DefaultLists {
     public static final String[] DEFAULT_APPS_LIST = { "com.fde.DomesticDigitalCopy",
