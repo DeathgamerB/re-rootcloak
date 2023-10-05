@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.chainfire.libsuperuser.BuildConfig;
-
 public class Common {
     public static final String PREFS_SETTINGS = "CustomizeSettings";
     public static final String PACKAGE_NAME = "io.pfuenzle.rerootcloak";

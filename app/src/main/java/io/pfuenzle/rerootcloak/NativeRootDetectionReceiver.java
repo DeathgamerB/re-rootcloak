@@ -13,14 +13,15 @@ import java.util.Set;
 
 public class NativeRootDetectionReceiver extends BroadcastReceiver {
     private static RootUtil mRootShell;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-    	if (intent == null) {
+        if (intent == null) {
             return;
         }
 
         mRootShell = new RootUtil();
-        if (!mRootShell.isSU()) {
+        if (!mRootShell.haveRootShell()) {
             return;
         }
 
@@ -28,7 +29,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             upgradeLibrary(context);
             return;
         }
-        
+
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             return;
         }
@@ -49,24 +50,22 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
-            mRootShell.runCommand(command);
-            mRootShell.runCommand("am force-stop " + app);
+            mRootShell.runCommand(command, context);
+            mRootShell.runCommand("am force-stop " + app, context);
         }
 
         if (libraryInstalled && !nativeHookingApps.isEmpty()) {
-            mRootShell.runCommand("chmod 755 /data/local/");
-            mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
-            mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Allowing wrapping on Lollipop and newer
-                WrappingSELinuxPolicy policy = new WrappingSELinuxPolicy();
-                policy.inject();
-                if (!policy.haveInjected()) {
-                    // try to use alternative tool
-                    mRootShell.runCommand("sepolicy-inject -s untrusted_app -t zygote -c fifo_file -p write -l");
-                }
-            }
+            mRootShell.runCommand("chmod 755 /data/local/", context);
+            mRootShell.runCommand("chmod 755 /data/local/librootcloak.so", context);
+            mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh", context);
+
+/*            WrappingSELinuxPolicy policy = new WrappingSELinuxPolicy();
+            policy.inject();
+            if (!policy.haveInjected()) {
+                // try to use alternative tool
+                mRootShell.runCommand("sepolicy-inject -s untrusted_app -t zygote -c fifo_file -p write -l", context);
+            }*/
+            //TODO find modern alternative
         }
     }
 
@@ -79,8 +78,8 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " ''";
 
-            mRootShell.runCommand(command);
-            mRootShell.runCommand("am force-stop " + app);
+            mRootShell.runCommand(command, context);
+            mRootShell.runCommand("am force-stop " + app, context);
         }
     }
 
@@ -107,16 +106,16 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             return;
         }
 
-        mRootShell.runCommand("cp '" + library + "' /data/local/");
-        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
+        mRootShell.runCommand("cp '" + library + "' /data/local/", context);
+        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so", context);
     }
-    
-    private class WrappingSELinuxPolicy extends eu.chainfire.libsuperuser.Policy {
+
+/*    private class WrappingSELinuxPolicy extends eu.chainfire.libsuperuser.Policy {
         @Override
         protected String[] getPolicies() {
             return new String[]{
                     "allow untrusted_app zygote fifo_file { write }"
             };
         }
-    }
+    }*/
 }

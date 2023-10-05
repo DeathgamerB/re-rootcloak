@@ -83,25 +83,24 @@ public class NativeRootDetection extends PreferenceActivity {
 
     public void installLibrary() {
         String library = getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
-        Log.d("Library", library);
 
-        if (!mRootShell.isSU() || !new File(library).exists()) {
+        if (!mRootShell.haveRootShell() || !new File(library).exists()) {
             Toast.makeText(this, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        mRootShell.runCommand("mkdir /data/local/");
-        mRootShell.runCommand("chmod 755 /data/local/");
-        mRootShell.runCommand("cp '" + library + "' /data/local/");
+        mRootShell.runCommand("mkdir -p /data/local/", this);
+        mRootShell.runCommand("chmod 755 /data/local/", this);
+        mRootShell.runCommand("cp '" + library + "' /data/local/", this);
 
         String wrapper = "#!/system/bin/sh\n" +
                 "export LD_PRELOAD=/data/local/librootcloak.so\n" +
                 "exec $*\n";
-        mRootShell.runCommand("echo '" + wrapper + "' > /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("echo '" + wrapper + "' > /data/local/rootcloak-wrapper.sh", this);
 
-        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
-        mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so", this);
+        mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh", this);
 
         Toast.makeText(this, R.string.successfully_installed, Toast.LENGTH_LONG).show();
 
@@ -109,14 +108,14 @@ public class NativeRootDetection extends PreferenceActivity {
     }
 
     public void uninstallLibrary() {
-        if (!mRootShell.isSU()) {
+        if (!mRootShell.haveRootShell()) {
             Toast.makeText(this, R.string.library_uninstallation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        mRootShell.runCommand("rm /data/local/librootcloak.so");
-        mRootShell.runCommand("rm /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("rm /data/local/librootcloak.so", this);
+        mRootShell.runCommand("rm /data/local/rootcloak-wrapper.sh", this);
 
         Toast.makeText(this, R.string.successfully_uninstalled, Toast.LENGTH_LONG).show();
 

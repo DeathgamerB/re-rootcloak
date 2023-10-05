@@ -1,43 +1,47 @@
 package io.pfuenzle.rerootcloak;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.topjohnwu.superuser.Shell;
+
 import java.util.List;
 
-import eu.chainfire.libsuperuser.Shell;
-
 public class RootUtil {
-    private static Shell.Interactive rootSession;
-    private static boolean isSU;
-
+    static {
+        // Set settings before the main shell can be created
+        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setFlags(Shell.FLAG_REDIRECT_STDERR)
+                .setTimeout(10)
+        );
+    }
     public RootUtil() {
-        openRootShell();
+        //Run new thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!haveRootShell()) {
+                    Shell.getShell();
+                }
+            }
+        }).start();
     }
 
-    public void runCommand(String command) {
-        if (rootSession == null) {
-            openRootShell();
+    public boolean haveRootShell(){
+        return Boolean.TRUE.equals(Shell.isAppGrantedRoot());
+    }
+
+    public void runCommand(String command, Context context) {
+        if(!haveRootShell()) {
+            Toast.makeText(context, "Root access not granted", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        rootSession.addCommand(command);
-    }
-
-    public boolean isSU() {
-        return isSU;
-    }
-
-    private void openRootShell() {
-        if (rootSession != null) {
-            return;
-        } else {
-            Shell.OnCommandResultListener commandResultListener = new Shell.OnCommandResultListener() {
-                @Override
-                public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                    isSU = (exitCode == Shell.OnCommandResultListener.SHELL_RUNNING);
-                }
-            };
-            rootSession = new Shell.Builder()
-                    .useSU()
-                    .setWatchdogTimeout(10)
-                    .open(commandResultListener);
+        Shell.Result result;
+        result = Shell.cmd(command).exec();
+        if(result.getCode() != 0) {
+            Toast.makeText(context, "Failed to run command", Toast.LENGTH_SHORT).show();
         }
     }
 }
