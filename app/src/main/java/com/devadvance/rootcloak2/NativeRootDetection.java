@@ -13,6 +13,7 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -84,6 +85,7 @@ public class NativeRootDetection extends PreferenceActivity {
 
     public void installLibrary() {
         String library = getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
+        Log.d("Library", library);
 
         if (!mRootShell.isSU() || !new File(library).exists()) {
             Toast.makeText(this, R.string.library_installation_failed, Toast.LENGTH_LONG).show();

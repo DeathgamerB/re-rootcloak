@@ -26,6 +26,9 @@
 // open
 #include <fcntl.h>
 
+#include <unistd.h>
+#include <stdlib.h>
+
 #define DEBUG_LOGS 0 // 1 to enable logs
 #define REGEX_FILTER 1 // 0 to disable regex filter
 

@@ -8,9 +8,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
+    namespace "com.devadvance.rootcloak2"
+
     defaultConfig {
         applicationId "com.devadvance.rootcloak2"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 23
         versionCode 18
         versionName "3.0-beta_20160731_2"
@@ -61,9 +63,40 @@ android {
         }
     }
 
+    // call regular ndk-build(.cmd) script from app directory
+    task ndkBuild(type: Exec) {
+        workingDir file('src\\main')
+        commandLine getNdkBuildCmd()
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
 }
 
+def getNdkDir() {
+    if (System.env.ANDROID_NDK_ROOT != null)
+        return System.env.ANDROID_NDK_ROOT
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkdir = properties.getProperty('ndk.dir', null)
+    if (ndkdir == null)
+        throw new GradleException("NDK location not found. Define location with ndk.dir in the local.properties file or with an ANDROID_NDK_ROOT environment variable.")
+
+    return ndkdir
+}
+
+def getNdkBuildCmd() {
+    def ndkbuild = getNdkDir() + "\\ndk-build"
+    if (System.properties['os.name'].toLowerCase().contains('windows'))
+        ndkbuild += ".cmd"
+
+    return ndkbuild
+}
+
+
 dependencies {
-    provided 'de.robv.android.xposed:api:82'
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    compileOnly 'de.robv.android.xposed:api:82'
+    implementation 'eu.chainfire:libsuperuser:1.0.0.201811281328'
 }

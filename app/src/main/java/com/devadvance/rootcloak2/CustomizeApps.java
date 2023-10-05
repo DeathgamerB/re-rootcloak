@@ -91,42 +91,43 @@ public class CustomizeApps extends PreferenceActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_new:
-                if (progressDialog == null) {
-                    progressDialog = new ProgressDialog(this);
-                    progressDialog.setMessage(getString(R.string.loading_apps));
-                }
-                progressDialog.show();
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_new) {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage(getString(R.string.loading_apps));
+            }
+            progressDialog.show();
 
-                // Load application list on a background thread while the ProgressDialog spins
-                new LoadAppList(this).execute(getPackageManager());
-                return true;
-            case R.id.action_new_custom:
-                final EditText input = new EditText(this);
-                new AlertDialog.Builder(CustomizeApps.this)
-                        .setTitle(R.string.add_app)
-                        .setMessage(R.string.input_package_name)
-                        .setView(input)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                savePref(input.getText().toString());
-                                loadList();
-                            }
-                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Do nothing.
-                    }
-                }).show();
-                return true;
-            case R.id.action_load_defaults:
-                loadDefaultsWithConfirm();
-                return true;
-            case R.id.action_clear_list:
-                clearList();
-                return true;
+            // Load application list on a background thread while the ProgressDialog spins
+            new LoadAppList(this).execute(getPackageManager());
+            return true;
+        } else if (itemId == R.id.action_new_custom) {
+            final EditText input = new EditText(this);
+            new AlertDialog.Builder(CustomizeApps.this)
+                    .setTitle(R.string.add_app)
+                    .setMessage(R.string.input_package_name)
+                    .setView(input)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            savePref(input.getText().toString());
+                            loadList();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Do nothing.
+                        }
+                    }).show();
+            return true;
+        } else if (itemId == R.id.action_load_defaults) {
+            loadDefaultsWithConfirm();
+            return true;
+        } else if (itemId == R.id.action_clear_list) {
+            clearList();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

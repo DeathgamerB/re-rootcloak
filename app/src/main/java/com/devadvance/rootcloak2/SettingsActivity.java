@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
+import eu.chainfire.libsuperuser.BuildConfig;
+
 @SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
